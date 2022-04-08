@@ -2,3 +2,4 @@
 *.pcl
 *.lhe
 *.lhe.gz
+*ipynb_checkpoints
