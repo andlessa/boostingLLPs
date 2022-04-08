@@ -2,7 +2,7 @@ import numpy as np
 import sys
 from scipy.interpolate import interp1d
 
-def getAvgGammaBeta(Ms,TIPOFUNC,computeStd=bool,V=[]):
+def getAvgGammaBeta(Ms,beta0Process,computeStd=bool,V=[]):
     """
     Method to return the average beta gamma of a series of decay using an analytical approximation.
     ....
@@ -15,7 +15,7 @@ def getAvgGammaBeta(Ms,TIPOFUNC,computeStd=bool,V=[]):
              ([(gb0,std0),(gb1,std1),...(gbN,stdN)]).
     """
     if len(V) == 0:
-        beta = velocity(Ms[0][0],TIPOFUNC)
+        beta = velocity(Ms[0][0],beta0Process)
     else:
         beta = np.sqrt(np.dot(V,V))
 
@@ -37,7 +37,7 @@ def getAvgGammaBeta(Ms,TIPOFUNC,computeStd=bool,V=[]):
         Vmom = [0, 0, beta] #Define parent velocity for the next decay
         GammaBeta.append((gb,Dsv))
 
-    return GammaBeta
+    return np.array(GammaBeta)
 
 
 
@@ -98,23 +98,21 @@ def getDecayStdDev(MX, M1, M2, VX=[], gbAvg=None):
 
         return np.around(Ds1b,4)
 
-def velocity (M,TIPOFUNC):
+def velocity (M,beta0Process):
 
     #Function to set a velocity for the mother particle from its mass.
 
-    if TIPOFUNC == 'VH':
+    if beta0Process == 'VH':
         V=-8.57144225e-12*(M**3)+7.63775328e-8*(M**2)-0.000308996381*M+1.00495090
-    if TIPOFUNC == 'VGO':
+    if beta0Process == 'VGO':
         V = -1.01378244e-11 * (M**3) + 9.33615192e-8 * (M**2) - 0.00035919197 * M + 9.4901006e-1
-    if TIPOFUNC == 'VER':
+    if beta0Process == 'VER':
         V  = -8.46530365966e-12 * (M**3) + 7.587104215644e-8 * (M**2) - 0.000309309092734 * M + 1.00793903613707
-    if TIPOFUNC == 'VX':
+    if beta0Process == 'VX':
         V = -1.0875078579e-11 * (M**3) + 1.010961291543e-7 * (M**2) - 0.000388407876673 * M + 1.00278035034909
-    if TIPOFUNC == 'VUR':
+    if beta0Process == 'VUR':
         V = -1.11705558773826e-11 * (M**3) + 1.02524960991756e-7 * (M**2) - 0.000357938654903 * M + 0.938547539837664
-    if TIPOFUNC == 'VANA':
+    if beta0Process == 'VANA':
         V = -1.10326218522e-11 * (M**3) + 9.915902460305e-8 * (M**2) - 0.000367227071633 * M + 1.00098600163719
 
     return V
-
-
