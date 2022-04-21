@@ -23,9 +23,15 @@ def getAvgGammaBeta(Ms,beta0Process,computeStd=bool,V=[]):
     GammaBeta = [(beta*gamma,0)] #tuple with the gammabeta and the uncertainty of the mother particle
     Vmom = [0,0,beta]
 
+
     for i, Mmom in enumerate(Ms[:-1]):
         Mdaughter1 = Ms[i + 1][0]
-        Mdaughter2 = Ms[i + 1][1]
+        if len(Ms[i + 1]) > 2:
+            bsmMasses = [Ms[i + 1][1] , Mmom[0]]
+            smMasses  = Ms[i + 1][1:]
+            Mdaughter2 = meff(bsmMasses, smMasses)
+        else:
+            Mdaughter2 = Ms[i + 1][1]
         Mmom = Mmom[0]
         gb = getDecayGammaBeta(MX=Mmom, M1=Mdaughter1, M2=Mdaughter2, VX=Vmom)
         if computeStd:
@@ -116,3 +122,15 @@ def velocity (M,beta0Process):
         V = -1.10326218522e-11 * (M**3) + 9.915902460305e-8 * (M**2) - 0.000367227071633 * M + 1.00098600163719
 
     return V
+
+
+def meff(bsmMasses, smMasses):
+    """
+    Compute the effective mass for a N-body decay M_i -> M_j + m_a + m_b + ... = M_i -> M_j + M_eff
+    """
+
+    meffMin = sum(smMasses)
+    meffMax = max(bsmMasses) - min(bsmMasses)
+    meff = (meffMax + meffMin) / 2.
+
+    return meff
